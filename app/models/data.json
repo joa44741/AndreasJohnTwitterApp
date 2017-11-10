@@ -1,0 +1,25 @@
+{
+  "users": {
+    "_model": "User",
+    "johndoe": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "nickName": "johndoe",
+      "email": "john@doe.com",
+      "password": "secret"
+    },
+    "adambien": {
+      "firstName": "Adam",
+      "lastName": "Bien",
+      "nickName": "JavaEE Guru",
+      "email": "adam@bien.com",
+      "password": "secret"
+    },
+    "test": {
+      "firstName": "test",
+      "lastName": "test",
+      "email": "test@test.de",
+      "password": "test"
+    }
+  }
+}

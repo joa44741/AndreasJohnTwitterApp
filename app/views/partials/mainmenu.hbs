@@ -1,0 +1,15 @@
+<nav class="ui inverted menu">
+  <div class="left menu">
+    <a id="home" class="item" href="/home"> Global Tweets</a>
+    <a id="friendtweets" class="item" href="/friendtweets"> Tweets of friends</a>
+    <a id="report" class="item" href="/usersearch"> Search for users</a>
+    <a id="settings" class="item" href="/myprofile"> My profile</a>
+  </div>
+  <div class="right menu">
+    <a id="logout" class="item" href="/logout"> Logout</a>
+  </div>
+</nav>
+
+<script>
+  $("#{{_id}}").addClass("active item");
+</script>
