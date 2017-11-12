@@ -35,7 +35,20 @@ exports.tweet = {
 };
 
 exports.postTweet = {
+  validate: {
 
+    payload: {
+      message: Joi.string().min(1).max(140).required(),
+    },
+
+    failAction: function (request, reply, source, error) {
+      reply.view('tweet', {
+        title: 'Error while posting tweet',
+        errors: error.data.details,
+      }).code(400);
+    },
+
+  },
   handler: function (request, reply) {
     let userEmail = request.auth.credentials.loggedInUser;
     let tweet = null;

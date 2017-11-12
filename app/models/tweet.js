@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 
 const tweetSchema = mongoose.Schema({
-  msg: {
+  message: {
     type: String,
     maxlength: 140,
     minlength: 1,
