@@ -21,5 +21,23 @@
       "email": "test@test.de",
       "password": "test"
     }
+  },
+  "tweets": {
+    "_model": "Tweet",
+    "one": {
+      "msg": "Hey this is an excellent Java EE tweet. Follow me here! :-)",
+      "creationDate": "2017-11-12T17:30:00.361Z",
+      "author": "->users.adambien"
+    },
+    "two": {
+      "msg": "Hey this is my second Java EE tweet. This time i want to convince you that Java is the best! Follow me!",
+      "creationDate": "2017-11-12T17:50:00.361Z",
+      "author": "->users.adambien"
+    },
+    "three": {
+      "msg": "Hey this is my first tweet! Pretty cool, right?!",
+      "creationDate": "2017-11-12T18:30:00.361Z",
+      "author": "->users.johndoe"
+    }
   }
 }

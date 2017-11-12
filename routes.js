@@ -12,6 +12,8 @@ module.exports = [
   { method: 'GET', path: '/logout', config: Accounts.logout },
 
   { method: 'GET', path: '/friendtweets', config: Tweets.friendtweets },
+  { method: 'GET', path: '/tweet', config: Tweets.tweet },
+  { method: 'POST', path: '/tweet', config: Tweets.postTweet },
 
   {
     method: 'GET',
