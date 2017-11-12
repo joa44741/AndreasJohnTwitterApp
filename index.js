@@ -1,11 +1,14 @@
 'use strict';
 
 const Hapi = require('hapi');
+const handlebars = require('handlebars');
 
 let server = new Hapi.Server();
 server.connection({ port: process.env.PORT || 4000 });
 
 require('./app/models/db');
+
+handlebars.registerHelper('dateFormat', require('handlebars-dateformat'));
 
 server.register([require('inert'), require('vision'), require('hapi-auth-cookie')], err => {
 

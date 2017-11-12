@@ -3,6 +3,7 @@
 const Tweet = require('../models/tweet');
 const User = require('../models/user');
 const Joi = require('joi');
+const moment = require('moment-timezone');
 
 exports.friendtweets = {
 
@@ -34,7 +35,7 @@ exports.tweet = {
 
 };
 
-exports.postTweet = {
+exports.posttweet = {
   validate: {
 
     payload: {
@@ -51,16 +52,33 @@ exports.postTweet = {
   },
   handler: function (request, reply) {
     let userEmail = request.auth.credentials.loggedInUser;
-    let tweet = null;
-
     User.findOne({ email: userEmail }).then(user => {
       let data = request.payload;
       data.author = user._id;
-      data.creationDate = new Date();
-      tweet = new Tweet(data);
+      data.creationDate = moment().tz('Europe/Berlin');
+      let tweet = new Tweet(data);
       return tweet.save();
     }).then(newTweet => {
-      reply.redirect('/home');
+      reply.redirect('/mytimeline');
+    }).catch(err => {
+      reply.redirect('/');
+    });
+  },
+
+};
+
+exports.mytimeline = {
+  handler: function (request, reply) {
+    let userEmail = request.auth.credentials.loggedInUser;
+
+    User.findOne({ email: userEmail }).then(user => {
+      let userId = user._id;
+      return Tweet.find({ author: userId }).populate('author').sort('-creationDate');
+    }).then(tweets => {
+      reply.view('mytimeline', {
+        title: 'My Timeline',
+        tweets: tweets,
+      });
     }).catch(err => {
       reply.redirect('/');
     });

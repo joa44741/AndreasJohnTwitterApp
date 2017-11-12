@@ -1,0 +1,8 @@
+{{#each tweets}}
+  <article class="ui stacked segment">
+    <h4><strong>{{author.nickName}}</strong> wrote on {{dateFormat creationDate "dddd, MMMM Do YYYY, HH:mm:ss"}}:</h4>
+    <p>
+      {{message}}
+    </p>
+  </article>
+{{/each}}

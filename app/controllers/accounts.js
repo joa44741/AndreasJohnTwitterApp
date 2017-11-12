@@ -1,20 +1,35 @@
 'use strict';
 
+const Tweet = require('../models/tweet');
 const User = require('../models/user');
 const Joi = require('joi');
 
 exports.main = {
   auth: false,
   handler: function (request, reply) {
-    reply.view('main', { title: 'Welcome to Johnny\'s Twitter' });
+    Tweet.find({}).populate('author').sort('-creationDate').then(tweets => {
+      reply.view('main', {
+        title: 'Welcome to Johnny\'s Twitter',
+        tweets: tweets,
+      });
+    }).catch(err => {
+      reply.redirect('/');
+    });
   },
-
 };
 
 exports.home = {
   handler: function (request, reply) {
     let loggedIn = request.auth.credentials.loggedIn;
-    reply.view('main', { title: 'Welcome to Johnny\'s Twitter', loggedIn: loggedIn });
+    Tweet.find({}).populate('author').sort('-creationDate').then(tweets => {
+      reply.view('main', {
+        title: 'Welcome to Johnny\'s Twitter',
+        tweets: tweets,
+        loggedIn: loggedIn,
+      });
+    }).catch(err => {
+      reply.redirect('/');
+    });
   },
 
 };

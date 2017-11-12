@@ -13,7 +13,8 @@ module.exports = [
 
   { method: 'GET', path: '/friendtweets', config: Tweets.friendtweets },
   { method: 'GET', path: '/tweet', config: Tweets.tweet },
-  { method: 'POST', path: '/tweet', config: Tweets.postTweet },
+  { method: 'POST', path: '/tweet', config: Tweets.posttweet },
+  { method: 'GET', path: '/mytimeline', config: Tweets.mytimeline },
 
   {
     method: 'GET',
