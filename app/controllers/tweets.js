@@ -85,3 +85,16 @@ exports.mytimeline = {
   },
 
 };
+
+exports.deletetweets = {
+  handler: function (request, reply) {
+    let tweetsToDelete = request.payload.tweetToDelete;
+    Tweet.remove({ _id: {
+      $in: tweetsToDelete,
+    }, }).then(res => {
+      reply.redirect('/mytimeline');
+    }).catch(err => {
+      reply.redirect('/mytimeline');
+    });
+  },
+};

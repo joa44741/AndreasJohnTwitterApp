@@ -1,8 +1,59 @@
-{{#each tweets}}
-  <article class="ui stacked segment">
-    <h4><strong>{{author.nickName}}</strong> wrote on {{dateFormat creationDate "dddd, MMMM Do YYYY, HH:mm:ss"}}:</h4>
-    <p>
-      {{message}}
-    </p>
-  </article>
-{{/each}}
+<form class="ui form" action="/mytimeline" method="POST">
+  {{#each tweets}}
+    <section class="ui segment">
+      <div class="inline fields">
+        <div class="fifteen wide field">
+          <h4><strong>{{author.nickName}}</strong> wrote on {{dateFormat creationDate "dddd, MMMM Do YYYY, HH:mm:ss"}}:
+          </h4>
+        </div>
+        <div class="one wide field">
+          {{#if ../deletePossible}}
+            <div class="ui checkbox">
+              <input type="checkbox" value="{{_id}}" name="tweetToDelete"/>
+              <label>select</label>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+      <div class="field">
+        {{message}}
+      </div>
+    </section>
+  {{/each}}
+  {{#if deletePossible}}
+  <section class="ui segment">
+
+    <div class="inline fields">
+      <div class="fifteen wide field">
+        <button class="ui blue submit button">Delete selection</button>
+      </div>
+      <div class="one wide field right aligned">
+        <div class="ui checkbox right aligned">
+          <input type="checkbox" onclick="" id="selectAllCb"/>
+          <label>select all</label>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+</section>
+</form>
+
+<script>
+  $("#selectAllCb").click(function(){
+    $("input[name='tweetToDelete']").prop('checked', this.checked);
+  });
+
+  $("input[name='tweetToDelete']").click(function(){
+    if(this.checked){
+      let isAllChecked = true;
+      $("input[name='tweetToDelete']").each(function() {
+        if (!this.checked){
+          isAllChecked = false;
+        }
+      });
+      $("#selectAllCb").prop('checked', isAllChecked);
+    }else{
+      $("#selectAllCb").prop('checked', false);
+    }
+  });
+</script>

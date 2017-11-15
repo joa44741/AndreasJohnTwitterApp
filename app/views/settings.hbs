@@ -1,0 +1,35 @@
+{{> mainmenu _id="settings" }}
+
+<section class="ui raised segment">
+  <div class="ui grid">
+    <div class="ui sixteen wide column">
+      <div class="ui stacked fluid form segment">
+        <form action="/settings" method="POST">
+          <h3 class="ui header">Settings</h3>
+          <div class="field">
+            <label>First Name</label>
+            <input value="{{user.firstName}}" type="text" name="firstName">
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <input value="{{user.lastName}}" type="text" name="lastName">
+          </div>
+          <div class="field">
+            <label>Nick Name</label>
+            <input value="{{user.nickName}}" type="text" name="nickName">
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input value="{{user.email}}" type="text" name="email">
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input value="{{user.password}}" type="password" name="password">
+          </div>
+          <button class="ui blue submit button">Submit</button>
+        </form>
+        {{> formerror }}
+      </div>
+    </div>
+  </div>
+</section>
