@@ -86,6 +86,25 @@ exports.mytimeline = {
 
 };
 
+exports.showtimeline = {
+  handler: function (request, reply) {
+    let userId = request.query.userId;
+    let userToShow;
+    User.findOne({ _id: userId }).then(user => {
+      userToShow = user;
+      return Tweet.find({ author: userId }).populate('author').sort('-creationDate');
+    }).then(tweets => {
+      reply.view('showtimeline', {
+        title: 'Timeline of User ' + userToShow.nickName,
+        tweets: tweets,
+        user: userToShow,
+      });
+    }).catch(err => {
+      reply.redirect('/');
+    });
+  },
+};
+
 exports.deletetweets = {
   handler: function (request, reply) {
     let tweetsToDelete = request.payload.tweetToDelete;

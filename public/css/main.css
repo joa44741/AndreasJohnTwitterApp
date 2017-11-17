@@ -5,3 +5,7 @@ body{
 strong{
     color: blue;
 }
+
+.event{
+    margin-bottom: 10px;
+}

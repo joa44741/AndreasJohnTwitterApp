@@ -195,3 +195,15 @@ exports.updateSettings = {
   },
 
 };
+
+exports.usersearch = {
+  handler: function (request, reply) {
+    const userEmail = request.auth.credentials.loggedInUser;
+    User.find({ email: { $ne: userEmail } }).then(foundUsers => {
+      reply.view('usersearch', { title: 'Search for users', users: foundUsers });
+    }).catch(err => {
+      reply.redirect('/');
+    });
+  },
+
+};

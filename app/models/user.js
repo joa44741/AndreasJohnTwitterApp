@@ -5,8 +5,14 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
   firstName: String,
   lastName: String,
-  nickName: String,
-  email: String,
+  nickName: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
   password: String,
   followers: [{
     type: mongoose.Schema.Types.ObjectId,

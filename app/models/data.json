@@ -16,9 +16,10 @@
       "password": "secret"
     },
     "test": {
-      "firstName": "test",
       "lastName": "test",
       "email": "test@test.de",
+      "nickName": "testNick",
+      "firstName": "test",
       "password": "test"
     }
   },

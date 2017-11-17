@@ -1,0 +1,36 @@
+{{> mainmenu _id="usersearch" }}
+
+<section class="ui raised segment">
+
+  <h1 class="ui header">Search for users</h1>
+
+  <div class="ui divider"></div>
+
+  <div class="ui cards">
+    {{#each users}}
+      <div class="card">
+        <!--div class="image">
+          <img src="/images/avatar2/large/kristy.png">
+        </div-->
+        <div class="content">
+          <a class="header">{{nickName}}</a>
+          <div class="meta">
+            {{firstName}} {{lastName}}<br/>
+            {{email}}
+          </div>
+        </div>
+        <div class="extra content">
+          <form action="/showtimeline" method="GET">
+            <input type="hidden" name="userId" value="{{_id}}"/>
+            <button class="ui blue submit button right floated">
+              Show Timeline
+            </button>
+          </form>
+
+          <i class="user icon"></i>
+          {{followers.length}} Followers
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</section>
