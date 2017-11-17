@@ -89,6 +89,16 @@ exports.mytimeline = {
 exports.showtimeline = {
   handler: function (request, reply) {
     let userId = request.query.userId;
+
+    let currentUserEmail = request.auth.credentials.loggedInUser;
+    User.findOne({ email: currentUserEmail }).then(user => {
+      if (userId === user._id.toString()) {
+        reply.redirect('mytimeline');
+      }
+    }).catch(err => {
+      reply.redirect('/');
+    });
+
     let userToShow;
     User.findOne({ _id: userId }).then(user => {
       userToShow = user;
