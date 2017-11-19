@@ -1,26 +1,40 @@
 {
   "users": {
     "_model": "User",
-    "johndoe": {
-      "firstName": "John",
-      "lastName": "Doe",
-      "nickName": "johndoe",
-      "email": "john@doe.com",
-      "password": "secret"
-    },
     "adambien": {
       "firstName": "Adam",
       "lastName": "Bien",
       "nickName": "JavaEE Guru",
       "email": "adam@bien.com",
-      "password": "secret"
+      "password": "secret",
+      "followings": [],
+      "followers": [
+        "->users.johndoe"
+      ]
     },
     "test": {
       "lastName": "test",
       "email": "test@test.de",
       "nickName": "testNick",
       "firstName": "test",
-      "password": "test"
+      "password": "test",
+      "followings": [
+        "->users.johndoe"
+      ],
+      "followers": []
+    },
+    "johndoe": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "nickName": "johndoe",
+      "email": "john@doe.com",
+      "password": "secret",
+      "followings": [
+        "->users.adambien"
+      ],
+      "followers": [
+        "->users.test"
+      ]
     }
   },
   "tweets": {

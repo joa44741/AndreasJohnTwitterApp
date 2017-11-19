@@ -1,16 +1,6 @@
 {{> mainmenu }}
 
 <article class="ui raised segment">
-
-  <button class="ui blue submit button right floated">Follow</button>
-  <div class="left floated">
-    <h1 class="ui header">Timeline of User: {{user.nickName}}</h1>
-    <h3 class="sub header">
-      Name: {{user.firstName}} {{user.lastName}}<br/>
-      Email: {{user.email}}
-    </h3>
-  </div>
-
-  <div class="ui divider"></div>
+  {{> userinformation isMyTimeline = false}}
   {{> tweetlist deletePossible = false }}
 </article>

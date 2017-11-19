@@ -9,10 +9,8 @@
   <div class="ui cards">
     {{#each users}}
       <div class="card">
-        <!--div class="image">
-          <img src="/images/avatar2/large/kristy.png">
-        </div-->
         <div class="content">
+          <img class="right floated mini ui image" src="/images/unknown_user.jpg">
           <a class="header">{{nickName}}</a>
           <div class="meta">
             {{firstName}} {{lastName}}<br/>
@@ -27,7 +25,7 @@
             </button>
           </form>
 
-          <i class="user icon"></i>
+          <i class="users icon"></i>
           {{followers.length}} Followers
         </div>
       </div>

@@ -3,6 +3,7 @@
 const Tweet = require('../models/tweet');
 const User = require('../models/user');
 const Joi = require('joi');
+const ObjectId = require('mongoose').mongo.ObjectId;
 
 exports.main = {
   auth: false,
@@ -207,3 +208,120 @@ exports.usersearch = {
   },
 
 };
+
+exports.mytimeline = {
+  handler: function (request, reply) {
+    const userEmail = request.auth.credentials.loggedInUser;
+    let currentUser;
+    User.findOne({ email: userEmail }).then(user => {
+      let userId = user._id;
+      currentUser = user;
+      return Tweet.find({ author: userId }).populate('author').sort('-creationDate');
+    }).then(tweets => {
+      reply.view('mytimeline', {
+        title: 'My Timeline',
+        user: currentUser,
+        tweets: tweets,
+      });
+    }).catch(err => {
+      reply.redirect('/');
+    });
+  },
+
+};
+
+exports.showtimeline = {
+  handler: function (request, reply) {
+    let userId = request.query.userId;
+
+    let currentUserEmail = request.auth.credentials.loggedInUser;
+    let currentUser;
+    User.findOne({ email: currentUserEmail }).then(user => {
+      if (userId === user._id.toString()) {
+        reply.redirect('mytimeline');
+      } else {
+        currentUser = user;
+      }
+    }).catch(err => {
+      reply.redirect('/');
+    });
+
+    let userToShow;
+    User.findOne({ _id: userId }).then(user => {
+      userToShow = user;
+      return Tweet.find({ author: userId }).populate('author').sort('-creationDate');
+    }).then(tweets => {
+      reply.view('showtimeline', {
+        title: 'Timeline of User ' + userToShow.nickName,
+        tweets: tweets,
+        user: userToShow,
+        isfollowing: currentUser.followings.indexOf(new ObjectId(userId)) !== -1,
+      });
+    }).catch(err => {
+      reply.redirect('/');
+    });
+  },
+};
+
+exports.followuser = {
+  handler: function (request, reply) {
+    let userIdToFollow = request.payload.userId;
+    let currentUserEmail = request.auth.credentials.loggedInUser;
+    let currentUser;
+    let userToFollow;
+
+    User.findOne({ email: currentUserEmail }).then(user => {
+      currentUser = user;
+      return User.findOne({ _id: userIdToFollow });
+    }).then(user => {
+      userToFollow = user;
+      userToFollow.followers.push(currentUser._id);
+      currentUser.followings.push(userToFollow._id);
+
+      userToFollow.save();
+      currentUser.save();
+
+      return Tweet.find({ author: userIdToFollow }).populate('author').sort('-creationDate');
+    }).then(tweets => {
+      reply.view('showtimeline', {
+        title: 'Timeline of User ' + userToFollow.nickName,
+        tweets: tweets,
+        user: userToFollow,
+        isfollowing: currentUser.followings.indexOf(new ObjectId(userIdToFollow)) !== -1,
+      });
+    }).catch(err => {
+      reply.redirect('/');
+    });
+  },
+};
+
+exports.unfollowuser = {
+  handler: function (request, reply) {
+    const userIdToUnfollow = request.payload.userId;
+    const currentUserEmail = request.auth.credentials.loggedInUser;
+    let currentUser;
+    let userToUnfollow;
+
+    User.updateOne({ email: currentUserEmail }, { $pullAll: { followings: [userIdToUnfollow] } }).then(updateInfo => {
+      return User.findOne({ email: currentUserEmail });
+    }).then(user => {
+      currentUser = user;
+      return User.updateOne({ _id: userIdToUnfollow }, { $pullAll: { followers: [currentUser._id] } });
+    }).then(updateInfo => {
+      return User.findOne({ _id: userIdToUnfollow });
+    }).then(user => {
+      userToUnfollow = user;
+      return Tweet.find({ author: userIdToUnfollow }).populate('author').sort('-creationDate');
+    }).then(tweets => {
+      reply.view('showtimeline', {
+        title: 'Timeline of User ' + userToUnfollow.nickName,
+        tweets: tweets,
+        user: userToUnfollow,
+        isfollowing: currentUser.followings.indexOf(new ObjectId(userIdToUnfollow)) !== -1,
+      });
+    }).catch(err => {
+      reply.redirect('/');
+    });
+  },
+}
+;

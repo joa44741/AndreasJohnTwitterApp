@@ -17,9 +17,11 @@ module.exports = [
   { method: 'GET', path: '/friendtweets', config: Tweets.friendtweets },
   { method: 'GET', path: '/tweet', config: Tweets.tweet },
   { method: 'POST', path: '/tweet', config: Tweets.posttweet },
-  { method: 'GET', path: '/mytimeline', config: Tweets.mytimeline },
+  { method: 'GET', path: '/mytimeline', config: Accounts.mytimeline },
   { method: 'POST', path: '/mytimeline', config: Tweets.deletetweets },
-  { method: 'GET', path: '/showtimeline', config: Tweets.showtimeline },
+  { method: 'GET', path: '/showtimeline', config: Accounts.showtimeline },
+  { method: 'POST', path: '/followuser', config: Accounts.followuser },
+  { method: 'POST', path: '/unfollowuser', config: Accounts.unfollowuser },
 
   {
     method: 'GET',

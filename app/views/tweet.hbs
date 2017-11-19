@@ -6,24 +6,22 @@
 
   <div class="ui divider"></div>
 
-  <section class="ui raised segment">
-    <div class="ui grid">
-      <div class="ui sixteen wide column fluid form">
-        <div class="ui stacked segment">
-          <form action="/tweet" method="POST">
-            <div class="field">
-              <label>Message</label>
-              <textarea onkeyup="textCounter(this,140);" maxlength="140" placeholder="Message" type="text"
-                        name="message"></textarea>
-              <input disabled maxlength="3" size="3" value="140" id="counter">
-            </div>
-            <button class="ui blue submit button">Send!</button>
-          </form>
-          {{> formerror }}
-        </div>
+  <div class="ui grid">
+    <div class="ui sixteen wide column fluid form">
+      <div class="ui stacked segment">
+        <form action="/tweet" method="POST">
+          <div class="field">
+            <label>Message</label>
+            <textarea onkeyup="textCounter(this,140);" maxlength="140" placeholder="Message" type="text"
+                      name="message"></textarea>
+            <input disabled maxlength="3" size="3" value="140" id="counter">
+          </div>
+          <button class="ui blue submit button">Send!</button>
+        </form>
+        {{> formerror }}
       </div>
     </div>
-  </section>
+  </div>
 
 </section>
 

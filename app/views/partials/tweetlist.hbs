@@ -1,12 +1,16 @@
 <form class="ui form" action="/mytimeline" method="POST">
   <div class="ui feed">
     {{#each tweets}}
+      <div class="ui divider"></div>
       <div class="event">
+        <div class="label">
+          <img src="/images/unknown_user.jpg">
+        </div>
         <div class="content">
           <div class="inline fields">
             <div class="fifteen wide field">
               <div class="summary">
-                <a href="/showtimeline?userId={{author._id}}" class="user">{{author.nickName}}</a> wrote on
+                <a href="/showtimeline?userId={{author._id}}" class="user">{{author.nickName}}</a>
                 <div class="date">{{dateFormat creationDate "dddd, MMMM Do YYYY, HH:mm:ss"}}</div>
               </div>
             </div>

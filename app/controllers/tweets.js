@@ -12,16 +12,6 @@ exports.friendtweets = {
       title: 'Tweets',
     });
   },
-  /*  Candidate.find({}).then(candidates => {
-      reply.view('home', {
-        title: 'Make a Donation',
-        candidates: candidates,
-      });
-    }).catch(err => {
-      reply.redirect('/');
-    });
-  },
-  */
 
 };
 
@@ -65,54 +55,6 @@ exports.posttweet = {
     });
   },
 
-};
-
-exports.mytimeline = {
-  handler: function (request, reply) {
-    let userEmail = request.auth.credentials.loggedInUser;
-
-    User.findOne({ email: userEmail }).then(user => {
-      let userId = user._id;
-      return Tweet.find({ author: userId }).populate('author').sort('-creationDate');
-    }).then(tweets => {
-      reply.view('mytimeline', {
-        title: 'My Timeline',
-        tweets: tweets,
-      });
-    }).catch(err => {
-      reply.redirect('/');
-    });
-  },
-
-};
-
-exports.showtimeline = {
-  handler: function (request, reply) {
-    let userId = request.query.userId;
-
-    let currentUserEmail = request.auth.credentials.loggedInUser;
-    User.findOne({ email: currentUserEmail }).then(user => {
-      if (userId === user._id.toString()) {
-        reply.redirect('mytimeline');
-      }
-    }).catch(err => {
-      reply.redirect('/');
-    });
-
-    let userToShow;
-    User.findOne({ _id: userId }).then(user => {
-      userToShow = user;
-      return Tweet.find({ author: userId }).populate('author').sort('-creationDate');
-    }).then(tweets => {
-      reply.view('showtimeline', {
-        title: 'Timeline of User ' + userToShow.nickName,
-        tweets: tweets,
-        user: userToShow,
-      });
-    }).catch(err => {
-      reply.redirect('/');
-    });
-  },
 };
 
 exports.deletetweets = {
