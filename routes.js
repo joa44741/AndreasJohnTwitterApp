@@ -13,8 +13,7 @@ module.exports = [
   { method: 'GET', path: '/settings', config: Accounts.viewSettings },
   { method: 'POST', path: '/settings', config: Accounts.updateSettings },
   { method: 'GET', path: '/usersearch', config: Accounts.usersearch },
-
-  { method: 'GET', path: '/friendtweets', config: Tweets.friendtweets },
+  { method: 'GET', path: '/friendtweets', config: Accounts.friendtweets },
   { method: 'GET', path: '/tweet', config: Tweets.tweet },
   { method: 'POST', path: '/tweet', config: Tweets.posttweet },
   { method: 'GET', path: '/mytimeline', config: Accounts.mytimeline },

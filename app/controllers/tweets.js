@@ -9,16 +9,6 @@ const env = require('../../env.json');
 
 cloudinary.config(env.cloudinary);
 
-exports.friendtweets = {
-
-  handler: function (request, reply) {
-    reply.view('friendtweets', {
-      title: 'Tweets',
-    });
-  },
-
-};
-
 exports.tweet = {
 
   handler: function (request, reply) {
@@ -68,7 +58,7 @@ exports.posttweet = {
 ;
 
 function postTweet(data, userEmail, reply) {
-  return User.findOne({email: userEmail}).then(user => {
+  return User.findOne({ email: userEmail }).then(user => {
     data.author = user._id;
     data.creationDate = moment().tz('Europe/Berlin');
     let tweet = new Tweet(data);

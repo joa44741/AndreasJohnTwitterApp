@@ -39,10 +39,33 @@ exports.home = {
 
 };
 
+exports.friendtweets = {
+
+  handler: function (request, reply) {
+    const userEmail = request.auth.credentials.loggedInUser;
+    User.findOne({ email: userEmail }).then(user => {
+      return Tweet.find({
+        author: {
+          $in: user.followings,
+        },
+      }).populate('author').sort('-creationDate');
+    }).then(tweets => {
+      reply.view('friendtweets', {
+        title: 'Tweets',
+        tweets: tweets,
+      });
+    }).catch(err => {
+      console.log(err);
+      reply.redirect('/');
+    });
+  },
+
+};
+
 exports.signup = {
   auth: false,
   handler: function (request, reply) {
-    reply.view('signup', {title: 'Sign up for Johnny\'s Twitter'});
+    reply.view('signup', { title: 'Sign up for Johnny\'s Twitter' });
   },
 
 };
@@ -50,7 +73,7 @@ exports.signup = {
 exports.login = {
   auth: false,
   handler: function (request, reply) {
-    reply.view('login', {title: 'Login to Johnny\'s Twitter '});
+    reply.view('login', { title: 'Login to Johnny\'s Twitter ' });
   },
 
 };
@@ -125,7 +148,7 @@ exports.authenticate = {
   },
   handler: function (request, reply) {
     const user = request.payload;
-    User.findOne({email: user.email}).then(foundUser => {
+    User.findOne({ email: user.email }).then(foundUser => {
       if (foundUser && foundUser.password === user.password) {
         request.cookieAuth.set({
           loggedIn: true,
@@ -145,8 +168,8 @@ exports.authenticate = {
 exports.viewSettings = {
   handler: function (request, reply) {
     const userEmail = request.auth.credentials.loggedInUser;
-    User.findOne({email: userEmail}).then(foundUser => {
-      reply.view('settings', {title: 'Edit Account Settings', user: foundUser});
+    User.findOne({ email: userEmail }).then(foundUser => {
+      reply.view('settings', { title: 'Edit Account Settings', user: foundUser });
     }).catch(err => {
       reply.redirect('/');
     });
@@ -201,7 +224,7 @@ exports.updateSettings = {
 };
 
 function saveUser(loggedInUserEmail, editedUser, request, reply) {
-  User.findOne({email: loggedInUserEmail}).then(user => {
+  User.findOne({ email: loggedInUserEmail }).then(user => {
     user.firstName = editedUser.firstName;
     user.lastName = editedUser.lastName;
     user.nickName = editedUser.nickName;
@@ -217,7 +240,7 @@ function saveUser(loggedInUserEmail, editedUser, request, reply) {
       loggedIn: true,
       loggedInUser: user.email,
     });
-    reply.view('settings', {title: 'Edit Account Settings', user: user});
+    reply.view('settings', { title: 'Edit Account Settings', user: user });
   }).catch(err => {
     console.log(err);
     reply.redirect('/');
@@ -227,8 +250,8 @@ function saveUser(loggedInUserEmail, editedUser, request, reply) {
 exports.usersearch = {
   handler: function (request, reply) {
     const userEmail = request.auth.credentials.loggedInUser;
-    User.find({email: {$ne: userEmail}}).then(foundUsers => {
-      reply.view('usersearch', {title: 'Search for users', users: foundUsers});
+    User.find({ email: { $ne: userEmail } }).then(foundUsers => {
+      reply.view('usersearch', { title: 'Search for users', users: foundUsers });
     }).catch(err => {
       reply.redirect('/');
     });
@@ -240,10 +263,10 @@ exports.mytimeline = {
   handler: function (request, reply) {
     const userEmail = request.auth.credentials.loggedInUser;
     let currentUser;
-    User.findOne({email: userEmail}).then(user => {
+    User.findOne({ email: userEmail }).then(user => {
       let userId = user._id;
       currentUser = user;
-      return Tweet.find({author: userId}).populate('author').sort('-creationDate');
+      return Tweet.find({ author: userId }).populate('author').sort('-creationDate');
     }).then(tweets => {
       reply.view('mytimeline', {
         title: 'My Timeline',
@@ -263,7 +286,7 @@ exports.showtimeline = {
 
     let currentUserEmail = request.auth.credentials.loggedInUser;
     let currentUser;
-    User.findOne({email: currentUserEmail}).then(user => {
+    User.findOne({ email: currentUserEmail }).then(user => {
       if (userId === user._id.toString()) {
         reply.redirect('mytimeline');
       } else {
@@ -274,9 +297,9 @@ exports.showtimeline = {
     });
 
     let userToShow;
-    User.findOne({_id: userId}).then(user => {
+    User.findOne({ _id: userId }).then(user => {
       userToShow = user;
-      return Tweet.find({author: userId}).populate('author').sort('-creationDate');
+      return Tweet.find({ author: userId }).populate('author').sort('-creationDate');
     }).then(tweets => {
       reply.view('showtimeline', {
         title: 'Timeline of User ' + userToShow.nickName,
@@ -297,9 +320,9 @@ exports.followuser = {
     let currentUser;
     let userToFollow;
 
-    User.findOne({email: currentUserEmail}).then(user => {
+    User.findOne({ email: currentUserEmail }).then(user => {
       currentUser = user;
-      return User.findOne({_id: userIdToFollow});
+      return User.findOne({ _id: userIdToFollow });
     }).then(user => {
       userToFollow = user;
       userToFollow.followers.push(currentUser._id);
@@ -308,7 +331,7 @@ exports.followuser = {
       userToFollow.save();
       currentUser.save();
 
-      return Tweet.find({author: userIdToFollow}).populate('author').sort('-creationDate');
+      return Tweet.find({ author: userIdToFollow }).populate('author').sort('-creationDate');
     }).then(tweets => {
       reply.view('showtimeline', {
         title: 'Timeline of User ' + userToFollow.nickName,
@@ -329,16 +352,16 @@ exports.unfollowuser = {
     let currentUser;
     let userToUnfollow;
 
-    User.updateOne({email: currentUserEmail}, {$pullAll: {followings: [userIdToUnfollow]}}).then(updateInfo => {
-      return User.findOne({email: currentUserEmail});
+    User.updateOne({ email: currentUserEmail }, { $pullAll: { followings: [userIdToUnfollow] } }).then(updateInfo => {
+      return User.findOne({ email: currentUserEmail });
     }).then(user => {
       currentUser = user;
-      return User.updateOne({_id: userIdToUnfollow}, {$pullAll: {followers: [currentUser._id]}});
+      return User.updateOne({ _id: userIdToUnfollow }, { $pullAll: { followers: [currentUser._id] } });
     }).then(updateInfo => {
-      return User.findOne({_id: userIdToUnfollow});
+      return User.findOne({ _id: userIdToUnfollow });
     }).then(user => {
       userToUnfollow = user;
-      return Tweet.find({author: userIdToUnfollow}).populate('author').sort('-creationDate');
+      return Tweet.find({ author: userIdToUnfollow }).populate('author').sort('-creationDate');
     }).then(tweets => {
       reply.view('showtimeline', {
         title: 'Timeline of User ' + userToUnfollow.nickName,
