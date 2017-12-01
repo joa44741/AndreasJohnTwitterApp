@@ -24,6 +24,7 @@ const userSchema = mongoose.Schema({
     ref: 'User',
   },
   ],
+  imageUrl: String,
 });
 
 const User = mongoose.model('User', userSchema);

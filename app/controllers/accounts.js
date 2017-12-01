@@ -4,6 +4,10 @@ const Tweet = require('../models/tweet');
 const User = require('../models/user');
 const Joi = require('joi');
 const ObjectId = require('mongoose').mongo.ObjectId;
+const cloudinary = require('cloudinary');
+const env = require('../../env.json');
+
+cloudinary.config(env.cloudinary);
 
 exports.main = {
   auth: false,
@@ -38,7 +42,7 @@ exports.home = {
 exports.signup = {
   auth: false,
   handler: function (request, reply) {
-    reply.view('signup', { title: 'Sign up for Johnny\'s Twitter' });
+    reply.view('signup', {title: 'Sign up for Johnny\'s Twitter'});
   },
 
 };
@@ -46,7 +50,7 @@ exports.signup = {
 exports.login = {
   auth: false,
   handler: function (request, reply) {
-    reply.view('login', { title: 'Login to Johnny\'s Twitter ' });
+    reply.view('login', {title: 'Login to Johnny\'s Twitter '});
   },
 
 };
@@ -88,7 +92,7 @@ exports.register = {
 
   handler: function (request, reply) {
     const user = new User(request.payload);
-
+    user.imageUrl = 'images/unknown_user.jpg';
     user.save().then(newUser => {
       reply.redirect('/login');
     }).catch(err => {
@@ -121,7 +125,7 @@ exports.authenticate = {
   },
   handler: function (request, reply) {
     const user = request.payload;
-    User.findOne({ email: user.email }).then(foundUser => {
+    User.findOne({email: user.email}).then(foundUser => {
       if (foundUser && foundUser.password === user.password) {
         request.cookieAuth.set({
           loggedIn: true,
@@ -141,8 +145,8 @@ exports.authenticate = {
 exports.viewSettings = {
   handler: function (request, reply) {
     const userEmail = request.auth.credentials.loggedInUser;
-    User.findOne({ email: userEmail }).then(foundUser => {
-      reply.view('settings', { title: 'Edit Account Settings', user: foundUser });
+    User.findOne({email: userEmail}).then(foundUser => {
+      reply.view('settings', {title: 'Edit Account Settings', user: foundUser});
     }).catch(err => {
       reply.redirect('/');
     });
@@ -151,6 +155,12 @@ exports.viewSettings = {
 };
 
 exports.updateSettings = {
+  payload: {
+    output: 'file',
+    parse: true,
+    allow: 'multipart/form-data',
+  },
+
   validate: {
 
     payload: {
@@ -159,6 +169,7 @@ exports.updateSettings = {
       nickName: Joi.string().required(),
       email: Joi.string().email().required(),
       password: Joi.string().required(),
+      picture: Joi.any(),
     },
 
     failAction: function (request, reply, source, error) {
@@ -177,31 +188,47 @@ exports.updateSettings = {
   handler: function (request, reply) {
     const loggedInUserEmail = request.auth.credentials.loggedInUser;
     const editedUser = request.payload;
-    User.findOne({ email: loggedInUserEmail }).then(user => {
-      user.firstName = editedUser.firstName;
-      user.lastName = editedUser.lastName;
-      user.nickName = editedUser.nickName;
-      user.email = editedUser.email;
-      user.password = editedUser.password;
-      return user.save();
-    }).then(user => {
-      request.cookieAuth.set({
-        loggedIn: true,
-        loggedInUser: user.email,
+    if (editedUser.picture.bytes !== 0) {
+      cloudinary.uploader.upload(editedUser.picture.path).then(result => {
+        editedUser.newImage = result.url;
+        return saveUser(loggedInUserEmail, editedUser, request, reply);
       });
-      reply.view('settings', { title: 'Edit Account Settings', user: user });
-    }).catch(err => {
-      reply.redirect('/');
-    });
+    } else {
+      saveUser(loggedInUserEmail, editedUser, request, reply);
+    }
   },
 
 };
 
+function saveUser(loggedInUserEmail, editedUser, request, reply) {
+  User.findOne({email: loggedInUserEmail}).then(user => {
+    user.firstName = editedUser.firstName;
+    user.lastName = editedUser.lastName;
+    user.nickName = editedUser.nickName;
+    user.email = editedUser.email;
+    user.password = editedUser.password;
+    if (editedUser.newImage) {
+      user.imageUrl = editedUser.newImage;
+    }
+
+    return user.save();
+  }).then(user => {
+    request.cookieAuth.set({
+      loggedIn: true,
+      loggedInUser: user.email,
+    });
+    reply.view('settings', {title: 'Edit Account Settings', user: user});
+  }).catch(err => {
+    console.log(err);
+    reply.redirect('/');
+  });
+}
+
 exports.usersearch = {
   handler: function (request, reply) {
     const userEmail = request.auth.credentials.loggedInUser;
-    User.find({ email: { $ne: userEmail } }).then(foundUsers => {
-      reply.view('usersearch', { title: 'Search for users', users: foundUsers });
+    User.find({email: {$ne: userEmail}}).then(foundUsers => {
+      reply.view('usersearch', {title: 'Search for users', users: foundUsers});
     }).catch(err => {
       reply.redirect('/');
     });
@@ -213,10 +240,10 @@ exports.mytimeline = {
   handler: function (request, reply) {
     const userEmail = request.auth.credentials.loggedInUser;
     let currentUser;
-    User.findOne({ email: userEmail }).then(user => {
+    User.findOne({email: userEmail}).then(user => {
       let userId = user._id;
       currentUser = user;
-      return Tweet.find({ author: userId }).populate('author').sort('-creationDate');
+      return Tweet.find({author: userId}).populate('author').sort('-creationDate');
     }).then(tweets => {
       reply.view('mytimeline', {
         title: 'My Timeline',
@@ -236,7 +263,7 @@ exports.showtimeline = {
 
     let currentUserEmail = request.auth.credentials.loggedInUser;
     let currentUser;
-    User.findOne({ email: currentUserEmail }).then(user => {
+    User.findOne({email: currentUserEmail}).then(user => {
       if (userId === user._id.toString()) {
         reply.redirect('mytimeline');
       } else {
@@ -247,9 +274,9 @@ exports.showtimeline = {
     });
 
     let userToShow;
-    User.findOne({ _id: userId }).then(user => {
+    User.findOne({_id: userId}).then(user => {
       userToShow = user;
-      return Tweet.find({ author: userId }).populate('author').sort('-creationDate');
+      return Tweet.find({author: userId}).populate('author').sort('-creationDate');
     }).then(tweets => {
       reply.view('showtimeline', {
         title: 'Timeline of User ' + userToShow.nickName,
@@ -270,9 +297,9 @@ exports.followuser = {
     let currentUser;
     let userToFollow;
 
-    User.findOne({ email: currentUserEmail }).then(user => {
+    User.findOne({email: currentUserEmail}).then(user => {
       currentUser = user;
-      return User.findOne({ _id: userIdToFollow });
+      return User.findOne({_id: userIdToFollow});
     }).then(user => {
       userToFollow = user;
       userToFollow.followers.push(currentUser._id);
@@ -281,7 +308,7 @@ exports.followuser = {
       userToFollow.save();
       currentUser.save();
 
-      return Tweet.find({ author: userIdToFollow }).populate('author').sort('-creationDate');
+      return Tweet.find({author: userIdToFollow}).populate('author').sort('-creationDate');
     }).then(tweets => {
       reply.view('showtimeline', {
         title: 'Timeline of User ' + userToFollow.nickName,
@@ -302,16 +329,16 @@ exports.unfollowuser = {
     let currentUser;
     let userToUnfollow;
 
-    User.updateOne({ email: currentUserEmail }, { $pullAll: { followings: [userIdToUnfollow] } }).then(updateInfo => {
-      return User.findOne({ email: currentUserEmail });
+    User.updateOne({email: currentUserEmail}, {$pullAll: {followings: [userIdToUnfollow]}}).then(updateInfo => {
+      return User.findOne({email: currentUserEmail});
     }).then(user => {
       currentUser = user;
-      return User.updateOne({ _id: userIdToUnfollow }, { $pullAll: { followers: [currentUser._id] } });
+      return User.updateOne({_id: userIdToUnfollow}, {$pullAll: {followers: [currentUser._id]}});
     }).then(updateInfo => {
-      return User.findOne({ _id: userIdToUnfollow });
+      return User.findOne({_id: userIdToUnfollow});
     }).then(user => {
       userToUnfollow = user;
-      return Tweet.find({ author: userIdToUnfollow }).populate('author').sort('-creationDate');
+      return Tweet.find({author: userIdToUnfollow}).populate('author').sort('-creationDate');
     }).then(tweets => {
       reply.view('showtimeline', {
         title: 'Timeline of User ' + userToUnfollow.nickName,

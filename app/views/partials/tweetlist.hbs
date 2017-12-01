@@ -4,7 +4,7 @@
       <div class="ui divider"></div>
       <div class="event">
         <div class="label">
-          <img src="/images/unknown_user.jpg">
+          <img src="{{author.imageUrl}}">
         </div>
         <div class="content">
           <div class="inline fields">
@@ -26,6 +26,11 @@
           <div class="extra text">
             {{message}}
           </div>
+          {{#if imageUrl}}
+            <div class="extra images">
+              <a href="{{imageUrl}}" data-lightbox="image-{{_id}}"><img src="{{imageUrl}}"></a>
+            </div>
+          {{/if}}
           <div class="meta">
 
           </div>

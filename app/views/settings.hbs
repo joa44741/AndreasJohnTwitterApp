@@ -4,7 +4,7 @@
   <div class="ui grid">
     <div class="ui sixteen wide column">
       <div class="ui stacked fluid form segment">
-        <form action="/settings" method="POST">
+        <form action="/settings" method="POST" enctype="multipart/form-data">
           <h3 class="ui header">Settings</h3>
           <div class="field">
             <label>First Name</label>
@@ -25,6 +25,11 @@
           <div class="field">
             <label>Password</label>
             <input value="{{user.password}}" type="password" name="password">
+          </div>
+          <div class="field">
+            <img class="small ui image" src="{{user.imageUrl}}">
+            <label>New image</label>
+            <input type="file" name="picture"> </input>
           </div>
           <button class="ui blue submit button">Submit</button>
         </form>

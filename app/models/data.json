@@ -7,6 +7,7 @@
       "nickName": "JavaEE Guru",
       "email": "adam@bien.com",
       "password": "secret",
+      "imageUrl": "https://avatars3.githubusercontent.com/u/891845?s=460&v=4",
       "followings": [],
       "followers": [
         "->users.johndoe"
@@ -18,6 +19,7 @@
       "nickName": "testNick",
       "firstName": "test",
       "password": "test",
+      "imageUrl": "images/unknown_user.jpg",
       "followings": [
         "->users.johndoe"
       ],
@@ -29,6 +31,7 @@
       "nickName": "johndoe",
       "email": "john@doe.com",
       "password": "secret",
+      "imageUrl": "https://rilm.files.wordpress.com/2013/12/mozart-glasses.jpg",
       "followings": [
         "->users.adambien"
       ],
@@ -42,7 +45,8 @@
     "one": {
       "message": "Hey this is an excellent Java EE tweet. Follow me here! :-)",
       "creationDate": "2017-11-12T17:30:00.361Z",
-      "author": "->users.adambien"
+      "author": "->users.adambien",
+      "imageUrl": "https://www.timetoact.de/wp-content/uploads/Java-EE-Logo.png"
     },
     "two": {
       "message": "Hey this is my second Java EE tweet. This time i want to convince you that Java is the best! Follow me!",
