@@ -2,6 +2,7 @@
 
 const Hapi = require('hapi');
 const handlebars = require('handlebars');
+const utils = require('./app/api/utils');
 
 let server = new Hapi.Server();
 server.connection({ port: process.env.PORT || 4000 });
@@ -10,7 +11,7 @@ require('./app/models/db');
 
 handlebars.registerHelper('dateFormat', require('handlebars-dateformat'));
 
-server.register([require('inert'), require('vision'), require('hapi-auth-cookie')], err => {
+server.register([require('inert'), require('vision'), require('hapi-auth-cookie'), require('hapi-auth-jwt2')], err => {
 
   if (err) {
     throw err;
@@ -36,13 +37,18 @@ server.register([require('inert'), require('vision'), require('hapi-auth-cookie'
     redirectTo: '/login',
   });
 
+  server.auth.strategy('jwt', 'jwt', {
+    key: 'Ib1990g@S&gnzSIb1990g@S&gnzSIb1990g@S&gnzS',
+    validateFunc: utils.validate,
+    verifyOptions: { algorithms: ['HS256'] },
+  });
+
   server.auth.default({
     strategy: 'standard',
   });
 
   server.route(require('./routes'));
-
-  //server.route(require('./routesapi'));
+  server.route(require('./routesapi'));
 
   server.start((err) => {
     if (err) {

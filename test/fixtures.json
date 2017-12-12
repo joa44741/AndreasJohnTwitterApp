@@ -1,0 +1,61 @@
+{
+  "tweetService": "http://localhost:4000",
+  "users": [
+    {
+      "firstName": "Adam",
+      "lastName": "Bien",
+      "nickName": "JavaEE Guru",
+      "email": "adam@bien.com",
+      "password": "secret",
+      "imageUrl": "https://avatars3.githubusercontent.com/u/891845?s=460&v=4",
+      "followings": [],
+      "followers": []
+    },
+    {
+      "lastName": "test",
+      "email": "test@test.de",
+      "nickName": "testNick",
+      "firstName": "test",
+      "password": "test",
+      "imageUrl": "images/unknown_user.jpg",
+      "followings": [],
+      "followers": []
+    },
+    {
+      "firstName": "John",
+      "lastName": "Doe",
+      "nickName": "johndoe",
+      "email": "john@doe.com",
+      "password": "secret",
+      "imageUrl": "https://rilm.files.wordpress.com/2013/12/mozart-glasses.jpg",
+      "followings": [],
+      "followers": []
+    }
+  ],
+  "newUser": {
+    "firstName": "Donald",
+    "lastName": "T.",
+    "email": "twittergod@usa.gov",
+    "nickName": "trumpy",
+    "password": "putin",
+    "imageUrl": "images/unknown_user.jpg",
+    "followings": [],
+    "followers": []
+  },
+  "tweets": [
+    {
+      "message": "Hey this is my first tweet! Pretty cool, right?!",
+      "creationDate": "2017-11-12T18:30:00.361Z"
+    },
+    {
+      "message": "Hey this is my second Java EE tweet. This time i want to convince you that Java is the best! Follow me!",
+      "creationDate": "2017-11-12T17:50:00.361Z"
+    },
+    {
+      "message": "Hey this is an excellent Java EE tweet. Follow me here! :-)",
+      "creationDate": "2017-11-12T17:30:00.361Z",
+      "imageUrl": "https://www.timetoact.de/wp-content/uploads/Java-EE-Logo.png"
+    }
+
+  ]
+}
