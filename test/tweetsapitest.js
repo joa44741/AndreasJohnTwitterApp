@@ -9,6 +9,7 @@ suite('Tweet API tests', function () {
 
   let users = fixtures.users;
   let tweets = fixtures.tweets;
+  let newUser = fixtures.newUser;
 
   const tweetService = new TweetService(fixtures.tweetService);
 
@@ -72,5 +73,25 @@ suite('Tweet API tests', function () {
     tweetService.deleteTweets(returnedUser._id);
     const d = tweetService.getTweets(returnedUser._id);
     assert.equal(d.length, 0);
+  });
+
+  test('find tweets of friends', function () {
+    // user 1 posts a tweet
+    const postedTweet = tweetService.postTweet(tweets[0]);
+    tweetService.logout();
+
+    // user 2 logs in and tries to find tweets of his friends
+    tweetService.login(users[1]);
+    const emptyTweets = tweetService.getTweetsOfFriends();
+    assert.equal(emptyTweets.length, 0);
+
+    const followingId = postedTweet.author._id;
+    tweetService.followUser(followingId);
+    const tweetsOfFriends = tweetService.getTweetsOfFriends();
+    assert.equal(tweetsOfFriends.length, 1);
+    assert(_.some([tweetsOfFriends[0].author], users[0]), 'returned author must be a superset of user');
+    assert.equal(tweetsOfFriends[0].message, tweets[0].message);
+
+    tweetService.unfollowUser(followingId);
   });
 });

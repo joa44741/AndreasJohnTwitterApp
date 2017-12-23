@@ -4,6 +4,22 @@
 
   <h1 class="ui header">Search for users</h1>
 
+  <form class="ui form" action="/usersearch" method="GET">
+    <div class="two inline fields">
+      <div class="three wide field">
+        <div class="ui left icon input">
+          <input type="text" name="filter" placeholder="Search users...">
+          <i class="users icon"></i>
+        </div>
+      </div>
+      <div class="field">
+          <button class="ui blue submit button">
+            Search
+          </button>
+      </div>
+    </div>
+  </form>
+
   <div class="ui divider"></div>
 
   <div class="ui cards">

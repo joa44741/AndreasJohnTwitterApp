@@ -53,6 +53,8 @@ suite('User API tests', function () {
 
     const allUsers = tweetService.getUsers();
     for (var i = 0; i < users.length; i++) {
+      console.log(allUsers[i]);
+      console.log(users[i]);
       assert(_.some([allUsers[i]], users[i]), 'returnedUser must be a superset of newUser');
     }
   });
@@ -62,6 +64,7 @@ suite('User API tests', function () {
     tweetService.followUser(u._id);
     const updatedUser = tweetService.getUser(u._id);
     assert.equal(updatedUser.followers.length, 1);
+    tweetService.unfollowUser(u._id);
   });
 
   test('unfollow a user', function () {
@@ -73,5 +76,18 @@ suite('User API tests', function () {
     const updatedUser2 = tweetService.getUser(u._id);
     assert.equal(updatedUser2.followers.length, 0);
   });
+
+  /*test('update settings', function () {
+
+    const currentUserId = tweetService.getCurrentUserId();
+    const currentUser = tweetService.getUser(currentUserId);
+    currentUser.firstName = 'Update';
+    currentUser.lastName = 'Me';
+    currentUser.image = currentUser.imageUrl;
+    tweetService.updateSettings(currentUser);
+    const updatedUser = tweetService.getUser(currentUser._id);
+    assert.equal(currentUser.firstName, updatedUser.firstName);
+    assert.equal(currentUser.lastName, updatedUser.lastName);
+  });*/
 
 });

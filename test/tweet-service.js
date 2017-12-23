@@ -20,6 +20,10 @@ class TweetService {
     return this.httpService.post('/api/users', newUser);
   }
 
+  updateSettings(updatedUser) {
+    return this.httpService.post('/api/users/' + updatedUser._id, updatedUser);
+  }
+
   deleteOneUser(id) {
     return this.httpService.delete('/api/users/' + id);
   }
@@ -44,6 +48,10 @@ class TweetService {
     return this.httpService.get('/api/users/' + id + '/tweets');
   }
 
+  getTweetsOfFriends() {
+    return this.httpService.get('/api/users/followings/tweets');
+  }
+
   deleteAllTweets() {
     return this.httpService.delete('/api/tweets');
   }
@@ -58,6 +66,10 @@ class TweetService {
 
   logout() {
     this.httpService.clearAuth();
+  }
+
+  getCurrentUserId() {
+    return this.httpService.get('/api/user').currentUserId;
   }
 }
 

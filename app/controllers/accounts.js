@@ -4,6 +4,10 @@ const Tweet = require('../models/tweet');
 const User = require('../models/user');
 const Joi = require('joi');
 const ObjectId = require('mongoose').mongo.ObjectId;
+const cloudinary = require('cloudinary');
+const env = require('../../env.json');
+
+cloudinary.config(env.cloudinary);
 
 exports.signup = {
   auth: false,
@@ -58,7 +62,7 @@ exports.register = {
 
   handler: function (request, reply) {
     const user = new User(request.payload);
-    user.imageUrl = 'images/unknown_user.jpg';
+    user.imageUrl = 'http://res.cloudinary.com/joa44741/image/upload/v1513337357/unknown_user_axspin.jpg';
     user.save().then(newUser => {
       reply.redirect('/login');
     }).catch(err => {
@@ -193,8 +197,28 @@ function saveUser(loggedInUserEmail, editedUser, request, reply) {
 exports.usersearch = {
   handler: function (request, reply) {
     const userEmail = request.auth.credentials.loggedInUser;
+    let filter = '';
+    if (request.query.filter) {
+      filter = request.query.filter;
+    }
+
     User.find({ email: { $ne: userEmail } }).then(foundUsers => {
-      reply.view('usersearch', { title: 'Search for users', users: foundUsers });
+      let filteredUsers;
+      if (filter === '') {
+        filteredUsers = foundUsers;
+      } else {
+        filteredUsers = [];
+        for (let user of foundUsers) {
+          if (user.firstName.toUpperCase().includes(filter.toUpperCase()) ||
+              user.lastName.toUpperCase().includes(filter.toUpperCase()) ||
+              user.nickName.toUpperCase().includes(filter.toUpperCase()) ||
+              user.email.toUpperCase().includes(filter.toUpperCase())) {
+            filteredUsers.push(user);
+          }
+        }
+      }
+
+      reply.view('usersearch', { title: 'Search for users', users: filteredUsers });
     }).catch(err => {
       reply.redirect('/');
     });
@@ -245,7 +269,10 @@ exports.unfollowuser = {
       return User.findOne({ email: currentUserEmail });
     }).then(user => {
       currentUser = user;
-      return User.updateOne({ _id: userIdToUnfollow }, { $pullAll: { followers: [currentUser._id] } });
+      return User.updateOne(
+          { _id: userIdToUnfollow, },
+          { $pullAll: { followers: [currentUser._id] },
+      });
     }).then(updateInfo => {
       return User.findOne({ _id: userIdToUnfollow });
     }).then(user => {

@@ -19,7 +19,7 @@
       "nickName": "testNick",
       "firstName": "test",
       "password": "test",
-      "imageUrl": "images/unknown_user.jpg",
+      "imageUrl": "http://res.cloudinary.com/joa44741/image/upload/v1513337357/unknown_user_axspin.jpg",
       "followings": [
         "->users.johndoe"
       ],
@@ -56,6 +56,11 @@
     "three": {
       "message": "Hey this is my first tweet! Pretty cool, right?!",
       "creationDate": "2017-11-12T18:30:00.361Z",
+      "author": "->users.johndoe"
+    },
+    "four": {
+      "message": "Hey this is my seconds tweet! Still cool, isn't it?!",
+      "creationDate": "2017-11-12T18:40:00.361Z",
       "author": "->users.johndoe"
     }
   }

@@ -6,6 +6,7 @@ const Joi = require('joi');
 const moment = require('moment-timezone');
 const cloudinary = require('cloudinary');
 const env = require('../../env.json');
+const ObjectId = require('mongoose').mongo.ObjectId;
 
 cloudinary.config(env.cloudinary);
 

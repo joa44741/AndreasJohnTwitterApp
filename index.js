@@ -2,6 +2,7 @@
 
 const Hapi = require('hapi');
 const handlebars = require('handlebars');
+const corsHeaders = require('hapi-cors-headers');
 const utils = require('./app/api/utils');
 
 let server = new Hapi.Server();
@@ -47,6 +48,7 @@ server.register([require('inert'), require('vision'), require('hapi-auth-cookie'
     strategy: 'standard',
   });
 
+  server.ext('onPreResponse', corsHeaders);
   server.route(require('./routes'));
   server.route(require('./routesapi'));
 

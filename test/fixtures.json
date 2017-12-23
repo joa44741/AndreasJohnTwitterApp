@@ -17,7 +17,7 @@
       "nickName": "testNick",
       "firstName": "test",
       "password": "test",
-      "imageUrl": "images/unknown_user.jpg",
+      "imageUrl": "http://res.cloudinary.com/joa44741/image/upload/v1513337357/unknown_user_axspin.jpg",
       "followings": [],
       "followers": []
     },
@@ -38,7 +38,7 @@
     "email": "twittergod@usa.gov",
     "nickName": "trumpy",
     "password": "putin",
-    "imageUrl": "images/unknown_user.jpg",
+    "imageUrl": "http://res.cloudinary.com/joa44741/image/upload/v1513337357/unknown_user_axspin.jpg",
     "followings": [],
     "followers": []
   },
