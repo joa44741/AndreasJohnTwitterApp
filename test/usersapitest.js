@@ -77,10 +77,11 @@ suite('User API tests', function () {
     assert.equal(updatedUser2.followers.length, 0);
   });
 
-  /*test('update settings', function () {
+  test('update settings', function () {
 
     const currentUserId = tweetService.getCurrentUserId();
     const currentUser = tweetService.getUser(currentUserId);
+    console.log(currentUser);
     currentUser.firstName = 'Update';
     currentUser.lastName = 'Me';
     currentUser.image = currentUser.imageUrl;
@@ -88,6 +89,10 @@ suite('User API tests', function () {
     const updatedUser = tweetService.getUser(currentUser._id);
     assert.equal(currentUser.firstName, updatedUser.firstName);
     assert.equal(currentUser.lastName, updatedUser.lastName);
-  });*/
+    currentUser.firstName = users[0].firstName;
+    currentUser.lastName = users[0].lastName;
+    tweetService.updateSettings(currentUser);
+    console.log(tweetService.getUser(currentUser._id));
+  });
 
 });
