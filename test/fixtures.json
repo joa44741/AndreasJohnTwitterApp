@@ -9,7 +9,8 @@
       "password": "secret",
       "imageUrl": "https://avatars3.githubusercontent.com/u/891845?s=460&v=4",
       "followings": [],
-      "followers": []
+      "followers": [],
+      "isAdmin": false
     },
     {
       "lastName": "test",
@@ -19,7 +20,8 @@
       "password": "test",
       "imageUrl": "http://res.cloudinary.com/joa44741/image/upload/v1513337357/unknown_user_axspin.jpg",
       "followings": [],
-      "followers": []
+      "followers": [],
+      "isAdmin": false
     },
     {
       "firstName": "John",
@@ -29,7 +31,13 @@
       "password": "secret",
       "imageUrl": "https://rilm.files.wordpress.com/2013/12/mozart-glasses.jpg",
       "followings": [],
-      "followers": []
+      "followers": [],
+      "isAdmin": false
+    },{
+      "nickName": "admin",
+      "email": "admin@johntwitter.com",
+      "password": "admin",
+      "isAdmin": true
     }
   ],
   "newUser": {
@@ -40,7 +48,19 @@
     "password": "putin",
     "imageUrl": "http://res.cloudinary.com/joa44741/image/upload/v1513337357/unknown_user_axspin.jpg",
     "followings": [],
-    "followers": []
+    "followers": [],
+    "isAdmin": false
+  },
+  "newUser2": {
+    "firstName": "Johnny",
+    "lastName": "B.",
+    "email": "johnny@bee.com",
+    "nickName": "Johnny B",
+    "password": "secret",
+    "imageUrl": "http://res.cloudinary.com/joa44741/image/upload/v1513337357/unknown_user_axspin.jpg",
+    "followings": [],
+    "followers": [],
+    "isAdmin": false
   },
   "tweets": [
     {

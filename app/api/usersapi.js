@@ -1,6 +1,7 @@
 'use strict';
 
 const User = require('../models/user');
+const Tweet = require('../models/tweet');
 const Boom = require('boom');
 const utils = require('./utils');
 const cloudinary = require('cloudinary');
@@ -15,7 +16,7 @@ exports.find = {
   },
 
   handler: function (request, reply) {
-    User.find({}).then(users => {
+    User.find({ isAdmin: false }).then(users => {
       reply(users);
     }).catch(err => {
       reply(Boom.badImplementation('error accessing db'));
@@ -49,11 +50,12 @@ exports.create = {
   auth: false,
 
   handler: function (request, reply) {
+
     const user = new User(request.payload);
     user.save().then(newUser => {
       reply(newUser).code(201);
     }).catch(err => {
-      reply(Boom.badImplementation('error creating user'));
+      reply(Boom.badImplementation('error creating user: '+ err));
     });
   },
 
@@ -66,10 +68,20 @@ exports.deleteAll = {
   },
 
   handler: function (request, reply) {
-    User.remove({}).then(err => {
+
+    const currentUserId = getAuthorIdByTokenInRequest(request);
+    User.findOne({ _id: currentUserId }).then(user => {
+      if (!user.isAdmin) {
+        reply(Boom.unauthorized('error deleting users'));
+      } else {
+        return Tweet.remove({});
+      }
+    }).then(res => {
+      return User.remove({ isAdmin: false });
+    }).then(res => {
       reply().code(204);
     }).catch(err => {
-      reply(Boom.badImplementation('error removing users'));
+      reply(Boom.badImplementation('error deleting users'));
     });
   },
 
@@ -82,17 +94,25 @@ exports.deleteOne = {
   },
 
   handler: function (request, reply) {
-    User.remove({ _id: request.params.id }).then(res => {
-      if (res.result.n === 0) {
-        reply(Boom.notFound('id not found'));
-      }
-
-      reply().code(204);
-    }).catch(err => {
-      reply(Boom.notFound('id not found'));
+    const currentUserId = getAuthorIdByTokenInRequest(request);
+    const userId = request.params.id;
+    User.findOne({ _id: currentUserId }).then(user => {
+        if (!user.isAdmin) {
+          reply(Boom.unauthorized('error deleting user'));
+        }else {
+          return Tweet.remove({ author: userId });
+        }
+      }).then(res => {
+      return User.remove({ _id: userId });
+    }).then(res => {
+        if (res.result.n === 0) {
+          reply(Boom.notFound('id not found'));
+        }
+        reply().code(204);
+      }).catch(err => {
+      reply(Boom.badImplementation('error deleting users: ' + err));
     });
   },
-
 };
 
 exports.authenticate = {
@@ -104,9 +124,9 @@ exports.authenticate = {
     User.findOne({ email: user.email }).then(foundUser => {
       if (foundUser && foundUser.password === user.password) {
         const token = utils.createToken(foundUser);
-        reply({ success: true, token: token }).code(201);
+        reply({ success: true, isAdmin: foundUser.isAdmin, token: token }).code(201);
       } else {
-        reply({ success: false, message: 'Authentication failed. User not found.' }).code(201);
+        reply({ success: false, message: 'Authentication failed. User not found.' }).code(200);
       }
     }).catch(err => {
       reply(Boom.notFound('internal db failure'));

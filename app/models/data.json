@@ -11,7 +11,8 @@
       "followings": [],
       "followers": [
         "->users.johndoe"
-      ]
+      ],
+      "isAdmin": false
     },
     "test": {
       "lastName": "test",
@@ -23,7 +24,8 @@
       "followings": [
         "->users.johndoe"
       ],
-      "followers": []
+      "followers": [],
+      "isAdmin": false
     },
     "johndoe": {
       "firstName": "John",
@@ -37,7 +39,36 @@
       ],
       "followers": [
         "->users.test"
-      ]
+      ],
+      "isAdmin": false
+    },
+    "admin": {
+      "nickName": "admin",
+      "email": "admin@johntwitter.com",
+      "password": "admin",
+      "isAdmin": true
+    },
+    "marge": {
+      "firstName": "Marge",
+      "lastName": "Simpson",
+      "nickName": "Marge",
+      "email": "marge@simpson.com",
+      "password": "secret",
+      "imageUrl": "http://res.cloudinary.com/joa44741/image/upload/v1513337357/unknown_user_axspin.jpg",
+      "followings": [],
+      "followers": [],
+      "isAdmin": false
+    },
+    "homer": {
+      "firstName": "Homer",
+      "lastName": "Simpson",
+      "nickName": "Homer",
+      "email": "homer@simpson.com",
+      "password": "secret",
+      "imageUrl": "http://res.cloudinary.com/joa44741/image/upload/v1513337357/unknown_user_axspin.jpg",
+      "followings": [],
+      "followers": [],
+      "isAdmin": false
     }
   },
   "tweets": {

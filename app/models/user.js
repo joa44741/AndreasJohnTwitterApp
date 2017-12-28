@@ -12,6 +12,7 @@ const userSchema = mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: String,
   followers: [{
@@ -25,6 +26,7 @@ const userSchema = mongoose.Schema({
   },
   ],
   imageUrl: String,
+  isAdmin: Boolean,
 });
 
 const User = mongoose.model('User', userSchema);

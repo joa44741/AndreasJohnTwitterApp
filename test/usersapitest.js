@@ -9,6 +9,7 @@ suite('User API tests', function () {
 
   let users = fixtures.users;
   let newUser = fixtures.newUser;
+  let admin = fixtures.users[3];
 
   const tweetService = new TweetService(fixtures.tweetService);
 
@@ -24,12 +25,18 @@ suite('User API tests', function () {
     const returnedUser = tweetService.createUser(newUser);
     assert(_.some([returnedUser], newUser), 'returnedUser must be a superset of newUser');
     assert.isDefined(returnedUser._id);
+    tweetService.logout();
+    tweetService.login(admin);
+    tweetService.deleteOneUser(returnedUser._id);
   });
 
   test('get user', function () {
     const u1 = tweetService.createUser(newUser);
     const u2 = tweetService.getUser(u1._id);
     assert.deepEqual(u1, u2);
+    tweetService.logout();
+    tweetService.login(admin);
+    tweetService.deleteOneUser(u1._id);
   });
 
   test('get invalid user', function () {
@@ -47,12 +54,13 @@ suite('User API tests', function () {
   });
 
   test('get users detail', function () {
-    for (let u of users) {
-      tweetService.createUser(u);
-    }
 
     const allUsers = tweetService.getUsers();
     for (var i = 0; i < users.length; i++) {
+      if (users[i].nickName === 'admin') {
+        continue;
+      }
+
       console.log(allUsers[i]);
       console.log(users[i]);
       assert(_.some([allUsers[i]], users[i]), 'returnedUser must be a superset of newUser');
@@ -65,6 +73,9 @@ suite('User API tests', function () {
     const updatedUser = tweetService.getUser(u._id);
     assert.equal(updatedUser.followers.length, 1);
     tweetService.unfollowUser(u._id);
+    tweetService.logout();
+    tweetService.login(admin);
+    tweetService.deleteOneUser(u._id);
   });
 
   test('unfollow a user', function () {
@@ -75,6 +86,9 @@ suite('User API tests', function () {
     tweetService.unfollowUser(u._id);
     const updatedUser2 = tweetService.getUser(u._id);
     assert.equal(updatedUser2.followers.length, 0);
+    tweetService.logout();
+    tweetService.login(admin);
+    tweetService.deleteOneUser(u._id);
   });
 
   test('update settings', function () {

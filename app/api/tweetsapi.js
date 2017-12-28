@@ -30,7 +30,7 @@ exports.findTweets = {
   },
 
   handler: function (request, reply) {
-    Tweet.find({author: request.params.id}).populate('author').sort('-creationDate').then(tweets => {
+    Tweet.find({ author: request.params.id }).populate('author').sort('-creationDate').then(tweets => {
       reply(tweets);
     }).catch(err => {
       reply(Boom.badImplementation('error accessing db'));
@@ -48,7 +48,7 @@ exports.findTweetsOfFriends = {
   handler: function (request, reply) {
     const userId = getAuthorIdByTokenInRequest(request);
 
-    User.findOne({_id: userId}).then(user => {
+    User.findOne({ _id: userId }).then(user => {
       return Tweet.find({
         author: {
           $in: user.followings,
@@ -108,11 +108,21 @@ exports.deleteAllTweets = {
   },
 
   handler: function (request, reply) {
-    Tweet.remove({}).then(err => {
+
+    const currentUserId = getAuthorIdByTokenInRequest(request);
+
+    User.findOne({ _id: currentUserId }).then(user => {
+      if (user.isAdmin) {
+        return Tweet.remove({});
+      } else {
+        reply(Boom.unauthorized('error removing Tweets: no admin account'));
+      }
+    }).then(result => {
       reply().code(204);
     }).catch(err => {
       reply(Boom.badImplementation('error removing Tweets'));
     });
+
   },
 
 };
@@ -124,17 +134,21 @@ exports.deleteTweets = {
   },
 
   handler: function (request, reply) {
-    const author = getAuthorIdByTokenInRequest(request);
+    const currentUserId = getAuthorIdByTokenInRequest(request);
     const userIdInRequest = request.params.id;
-    if (author === userIdInRequest) {
-      Tweet.remove({author: author}).then(result => {
-        reply().code(204);
-      }).catch(err => {
-        reply(Boom.badImplementation('error removing Tweets'));
-      });
-    } else {
-      reply(Boom.unauthorized('error removing Tweet'));
-    }
+
+    User.findOne({ _id: currentUserId }).then(user => {
+      if (currentUserId === userIdInRequest || user.isAdmin) {
+        return Tweet.remove({ author: userIdInRequest });
+      } else {
+        reply(Boom.unauthorized('error removing Tweets'));
+      }
+    }).then(result => {
+      reply().code(204);
+    }).catch(err => {
+      reply(Boom.badImplementation('error removing Tweets'));
+    });
+    ;
   },
 };
 
@@ -152,13 +166,16 @@ exports.deleteOneTweet = {
   },
 
   handler: function (request, reply) {
-
     const tweetIdToRemove = request.params.id;
-    const author = getAuthorIdByTokenInRequest(request);
+    const currentUserId = getAuthorIdByTokenInRequest(request);
+    let currentUser;
 
-    Tweet.findOne({_id: tweetIdToRemove}).then(tweet => {
-      if (tweet.author.equals(new ObjectId(author))) {
-        return Tweet.remove({_id: tweetIdToRemove});
+    User.findOne({ _id: currentUserId }).then(user => {
+      currentUser = user;
+      return Tweet.findOne({ _id: tweetIdToRemove });
+    }).then(tweet => {
+      if (currentUser.isAdmin || tweet.author.equals(new ObjectId(currentUserId))) {
+        return Tweet.remove({ _id: tweetIdToRemove });
       } else {
         reply(Boom.unauthorized('error removing Tweet'));
       }
